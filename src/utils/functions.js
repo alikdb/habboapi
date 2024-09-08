@@ -15,7 +15,6 @@ const timeAgo = (time, type = "date") => {
   }
 
   const monthDiff = dayjs().diff(date, "month");
-  console.log(monthDiff);
   if (monthDiff < 6) {
     return dayjs(time).fromNow();
   } else if (monthDiff < 12) {
