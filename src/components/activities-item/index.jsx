@@ -11,7 +11,7 @@ const ActivitiesItem = ({ data }) => {
     <div
       className={cx(
         "shadow bg-zinc-100 px-2 py-3 grid rounded",
-        isNew && "bg-green-500"
+        isNew && "!bg-green-500"
       )}
     >
       <span className={cx("text-lg text-zinc-700", isNew && "!text-zinc-100")}>
