@@ -1,32 +1,35 @@
-import dayjs from "dayjs/esm";
-
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
+import { format, formatDistanceToNow, differenceInMonths } from "date-fns";
+import { fromUnixTime, parseISO } from "date-fns"; // Unix ve ISO formatları için
+import { tr } from "date-fns/locale"; // Türkçe dil desteği için
 
 import PropTypes from "prop-types";
+
 const timeAgo = (time, type = "date") => {
   let date;
 
+  // Tarih tipi "date" olduğunda ISO formatını kullanıyoruz
   if (type === "date") {
-    date = dayjs(time).format("DD/MM/YYYY HH:mm:ss");
+    date = parseISO(time); // "time" string'i ISO formatında olmalı
   }
 
+  // Tarih tipi "unix" olduğunda Unix timestamp'i normal tarihe çeviriyoruz
   if (type === "unix") {
-    date = dayjs.unix(time).format("DD/MM/YYYY HH:mm:ss");
+    date = fromUnixTime(time); // Unix timestamp'i kullanarak tarih oluşturma
   }
 
-  const monthDiff = dayjs().diff(date, "month");
+  const monthDiff = differenceInMonths(new Date(), date);
+
   if (monthDiff < 6) {
-    return dayjs(time).fromNow();
+    return formatDistanceToNow(date, { addSuffix: true, locale: tr });
   } else if (monthDiff < 12) {
-    return dayjs(date).format("DD MMMM");
+    return format(date, "dd MMMM", { locale: tr });
   } else {
-    return dayjs(date).format("DD.MM.YYYY");
+    return format(date, "dd.MM.yyyy", { locale: tr });
   }
 };
 
 timeAgo.propTypes = {
-  time: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired, // "date" tipi ISO string olmalı
   type: PropTypes.oneOf(["date", "unix"]),
 };
 
