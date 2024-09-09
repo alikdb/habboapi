@@ -27,7 +27,6 @@ const BadgesComponent = ({ type = "large" }) => {
     },
     enabled: true,
   });
-
   useEffect(() => {
     refetch(); // Herhangi bir değişiklikte (sayfa veya arama terimi) yeniden çek
   }, [currentPage, refetch]);
