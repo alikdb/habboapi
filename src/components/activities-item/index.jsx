@@ -1,16 +1,11 @@
 import PropTypes from "prop-types";
-import dayjs from "dayjs";
 import cx from "classix";
 import { timeAgo } from "~/utils/functions";
 const ActivitiesItem = ({ data }) => {
-  const isnew = dayjs().diff(dayjs(data.created_at), "day") < 1;
+  // todo add is new
+  const isnew = false;
   return (
-    <div
-      className={cx(
-        "shadow bg-zinc-100 px-2 py-3 grid rounded",
-        isnew && "bg-green-500",
-      )}
-    >
+    <div className={cx("shadow bg-zinc-100 px-2 py-3 grid rounded")}>
       <span className={cx("text-lg text-zinc-700", isnew && "!text-zinc-100")}>
         {data.count} {data.name} added
       </span>
