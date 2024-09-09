@@ -5,6 +5,7 @@ import { fetchBadges } from "~/requests/fetch-badges";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
+import LoadingItem from "../loading-item";
 
 const LARGE_ITEMS_PER_PAGE = 120;
 const SMALL_ITEMS_PER_PAGE = 36;
@@ -15,7 +16,7 @@ const BadgesComponent = ({ type = "large" }) => {
 
   const [lastPage, setLastPage] = useState(0);
   const { isLoading, data, refetch } = useQuery({
-    queryKey: ["badges"],
+    queryKey: ["badges", currentPage],
     queryFn: async () => {
       const data = await fetchBadges({
         page: currentPage,
@@ -64,9 +65,9 @@ const BadgesComponent = ({ type = "large" }) => {
       <hr className="my-4" />
 
       <div>
-        {isLoading && <div>Loading...</div>}
+        {isLoading && <LoadingItem />}
         {!isLoading &&
-          badges.map((badge) => <BadgesItem data={badge} key={badge.code} />)}
+          data.map((badge) => <BadgesItem data={badge} key={badge.code} />)}
       </div>
       <div className="flex justify-center mt-4">
         {type === "large" && (
