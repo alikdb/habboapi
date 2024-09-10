@@ -20,11 +20,14 @@ const timeAgo = (time, type = "date") => {
   const monthDiff = differenceInMonths(new Date(), date);
 
   if (monthDiff < 6) {
-    return formatDistanceToNow(date, { addSuffix: true, locale: tr });
+    // return formatDistanceToNow(date, { addSuffix: true, locale: tr });
+    return formatDistanceToNow(date, { addSuffix: true });
   } else if (monthDiff < 12) {
-    return format(date, "dd MMMM", { locale: tr });
+    //return format(date, "dd MMMM", { locale: tr });
+    return format(date, "dd MMMM");
   } else {
-    return format(date, "dd.MM.yyyy", { locale: tr });
+    // return format(date, "dd.MM.yyyy", { locale: tr });
+    return format(date, "dd.MM.yyyy");
   }
 };
 
