@@ -25,9 +25,12 @@ const Navbar = () => {
         {breakpoint !== "mobile" && (
           <div className="h-14 flex justify-between items-center ">
             <div className="flex gap-x-3">
-              {NAVBAR.map((item, index) => (
-                <NavbatItem key={index} name={item.name} path={item.path} />
-              ))}
+              {NAVBAR.map((item, index) => {
+                if (item.hidden) return null;
+                return (
+                  <NavbatItem key={index} name={item.name} path={item.path} />
+                );
+              })}
             </div>
             <div>
               <NavbatItem name="API" path="/api" />
@@ -53,11 +56,15 @@ const Navbar = () => {
                     <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-zinc-300 mb-8" />
 
                     <ul className="flex flex-col items-center text-xl gap-y-3">
-                      {NAVBAR.map((item, index) => (
-                        <li key={"mobile-" + index}>
-                          <Link to={item.path}>{item.name}</Link>
-                        </li>
-                      ))}
+                      {NAVBAR.map((item, index) => {
+                        if (item.hidden) return null;
+
+                        return (
+                          <li key={"mobile-" + index}>
+                            <Link to={item.path}>{item.name}</Link>
+                          </li>
+                        );
+                      })}
                       <li>
                         <Link to="/api">API</Link>
                       </li>

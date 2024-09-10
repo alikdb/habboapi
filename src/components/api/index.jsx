@@ -25,6 +25,19 @@ const APIComponent = () => {
           >
             {import.meta.env.VITE_API_URL + "badges"}
           </Link>
+          <br />
+          example:{" "}
+          <Link
+            to={
+              import.meta.env.VITE_API_URL +
+              "badges?hotel=com.tr&limit=100&page=1&term=habbolar"
+            }
+            target="_blank"
+            className="text-blue-400"
+          >
+            {import.meta.env.VITE_API_URL +
+              "badges?hotel=com.tr&limit=100&page=1&term=habbolar"}
+          </Link>
         </div>
 
         <div color="my-2">
