@@ -1,4 +1,4 @@
-const fetchBadges = async ({ page, itemsPerPage, search }) => {
+const fetchBadges = async (page, itemsPerPage, search) => {
   console.log();
   const url =
     import.meta.env.VITE_API_URL +

@@ -2,8 +2,14 @@ import PropTypes from "prop-types";
 import { Tooltip } from "react-tooltip";
 import uniqid from "uniqid";
 import cx from "classix";
+import { parseISO, format } from "date-fns";
 
 const BadgesItem = ({ data }) => {
+  const formatDate = (date) => {
+    const formatD = parseISO(date);
+    return format(formatD, "dd.MM.yyyy");
+  };
+
   const badgeUniqueId = uniqid();
   return (
     <div
@@ -26,9 +32,12 @@ const BadgesItem = ({ data }) => {
 
       <Tooltip
         anchorSelect={`.${badgeUniqueId}`}
-        html={`${data.code}  <br /> ${data.name} <br /> ${
-          data.description ? data.description : ""
-        }`}
+        render={() => (
+          <div>
+            {data.code} <br /> {data.name} <br /> {data.hotel} <br />{" "}
+            {formatDate(data.created_at)}
+          </div>
+        )}
       />
     </div>
   );

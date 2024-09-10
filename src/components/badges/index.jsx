@@ -3,36 +3,49 @@ import { Link } from "react-router-dom";
 import BadgesItem from "../badges-item";
 import { fetchBadges } from "~/requests/fetch-badges";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import LoadingItem from "../loading-item";
 
-const LARGE_ITEMS_PER_PAGE = 120;
-const SMALL_ITEMS_PER_PAGE = 36;
+import { useBreakpoint } from "~/hooks/use-breakpoint.js";
 
 const BadgesComponent = ({ type = "large" }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { breakpoint } = useBreakpoint();
+  let LARGE_ITEMS_PER_PAGE = 0;
+  let SMALL_ITEMS_PER_PAGE = 0;
 
+  if (breakpoint === "desktop") {
+    LARGE_ITEMS_PER_PAGE = 120;
+    SMALL_ITEMS_PER_PAGE = 36;
+  } else {
+    LARGE_ITEMS_PER_PAGE = 60;
+    SMALL_ITEMS_PER_PAGE = 12;
+  }
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [badges, setBadges] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [lastPage, setLastPage] = useState(0);
-  const { isLoading, data, refetch } = useQuery({
-    queryKey: ["badges", currentPage],
-    queryFn: async () => {
-      const data = await fetchBadges({
-        page: currentPage,
-        itemsPerPage: LARGE_ITEMS_PER_PAGE,
-        search: "",
-      });
-      setLastPage(data.last_page);
-      return data.badges;
-    },
-  });
-  useEffect(() => {
-    refetch(); // Herhangi bir değişiklikte (sayfa veya arama terimi) yeniden çek
-  }, [currentPage, refetch]);
 
   const handlePageChange = (pageNumber) => {
+    setIsLoading(true);
     setCurrentPage(pageNumber.selected + 1);
   };
+
+  const getBadges = async (page, itemsPerPage, search) => {
+    const response = await fetchBadges(page, itemsPerPage, search);
+    return response;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const badgesData = await getBadges(currentPage, LARGE_ITEMS_PER_PAGE, "");
+      setBadges(badgesData.badges);
+      setLastPage(badgesData.last_page);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [currentPage]);
 
   return (
     <div className="relative block rounded shadow bg-white p-5 my-5 via-blue-500 to-purple-600">
@@ -55,13 +68,13 @@ const BadgesComponent = ({ type = "large" }) => {
         {isLoading && <LoadingItem />}
         {!isLoading &&
           type !== "small" &&
-          data.map((badge) => <BadgesItem data={badge} key={badge.code} />)}
+          badges.map((badge, index) => <BadgesItem data={badge} key={index} />)}
 
         {!isLoading &&
           type == "small" &&
-          data
+          badges
             .slice(0, SMALL_ITEMS_PER_PAGE)
-            .map((badge) => <BadgesItem data={badge} key={badge.code} />)}
+            .map((badge, index) => <BadgesItem data={badge} key={index} />)}
       </div>
       <div className="flex justify-center mt-4">
         {type === "large" && (
@@ -70,7 +83,8 @@ const BadgesComponent = ({ type = "large" }) => {
             breakLabel="..."
             nextLabel=">"
             onPageChange={handlePageChange}
-            pageRangeDisplayed={4}
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={breakpoint === "desktop" ? 3 : 1}
             pageCount={lastPage}
             previousLabel="<"
             renderOnZeroPageCount={null}
