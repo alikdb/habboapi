@@ -11,7 +11,6 @@ const LARGE_ITEMS_PER_PAGE = 120;
 const SMALL_ITEMS_PER_PAGE = 36;
 
 const BadgesComponent = ({ type = "large" }) => {
-  const [badges, setBadges] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [lastPage, setLastPage] = useState(0);
@@ -26,22 +25,10 @@ const BadgesComponent = ({ type = "large" }) => {
       setLastPage(data.last_page);
       return data.badges;
     },
-    enabled: true,
   });
   useEffect(() => {
     refetch(); // Herhangi bir değişiklikte (sayfa veya arama terimi) yeniden çek
   }, [currentPage, refetch]);
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      if (type === "small") {
-        setBadges(data.slice(0, SMALL_ITEMS_PER_PAGE));
-      } else {
-        setBadges(data);
-      }
-    }
-    return () => {};
-  }, [data, type]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber.selected + 1);
@@ -67,7 +54,14 @@ const BadgesComponent = ({ type = "large" }) => {
       <div>
         {isLoading && <LoadingItem />}
         {!isLoading &&
+          type !== "small" &&
           data.map((badge) => <BadgesItem data={badge} key={badge.code} />)}
+
+        {!isLoading &&
+          type == "small" &&
+          data
+            .slice(0, SMALL_ITEMS_PER_PAGE)
+            .map((badge) => <BadgesItem data={badge} key={badge.code} />)}
       </div>
       <div className="flex justify-center mt-4">
         {type === "large" && (
